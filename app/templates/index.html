@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventário de Jogos — API</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <h1>Inventário de Jogos — API</h1>
+    <p>v1.0 &nbsp;·&nbsp; SQLite + Flask</p>
+
+    <h2>Rotas disponíveis</h2>
+    <table>
+        <tr><th>Método</th><th>Rota</th><th>Ação</th><th>Status</th></tr>
+        <tr><td>GET</td><td>/api/jogos</td><td>Lista todos os jogos</td><td>200</td></tr>
+        <tr><td>GET</td><td>/api/jogos/&lt;id&gt;</td><td>Busca um jogo por ID</td><td>200 / 404</td></tr>
+        <tr><td>POST</td><td>/api/jogos</td><td>Insere um novo jogo</td><td>201 / 400</td></tr>
+        <tr><td>PUT</td><td>/api/jogos/&lt;id&gt;</td><td>Atualiza um jogo existente</td><td>204 / 404</td></tr>
+        <tr><td>DELETE</td><td>/api/jogos/&lt;id&gt;</td><td>Remove um jogo</td><td>200 / 404</td></tr>
+    </table>
+
+    <h2>Campos do jogo</h2>
+    <table>
+        <tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th></tr>
+        <tr><td><span class="required">nome</span></td><td>string</td><td>Sim</td><td>Nome do jogo</td></tr>
+        <tr><td><span class="required">preco</span></td><td>number</td><td>Sim</td><td>Preço em reais</td></tr>
+        <tr><td><span class="required">quantidade</span></td><td>integer</td><td>Sim</td><td>Quantidade de cópias do jogo</td></tr>
+        <tr><td><span class="optional">ano_lancamento</span></td><td>integer</td><td>Não</td><td>Ano de lançamento</td></tr>
+        <tr><td><span class="optional">descricao</span></td><td>string</td><td>Não</td><td>Descrição do jogo</td></tr>
+        <tr><td><span class="optional">desenvolvedora</span></td><td>string</td><td>Não</td><td>Empresa desenvolvedora</td></tr>
+        <tr><td><span class="optional">genero</span></td><td>string</td><td>Não</td><td>Gênero do jogo</td></tr>
+        <tr><td><span class="optional">plataformas</span></td><td>array</td><td>Não</td><td>Lista de plataformas (ex: ["PS5", "PC"])</td></tr>
+    </table>
+
+    <h2>Exemplos de uso com curl</h2>
+
+    <p><strong>Listar todos os jogos</strong></p>
+    <pre>curl http://localhost:5000/api/jogos</pre>
+
+    <p><strong>Buscar jogo por ID</strong></p>
+    <pre>curl http://localhost:5000/api/jogos/1</pre>
+
+    <p><strong>Inserir novo jogo (POST)</strong></p>
+    <p class="note">Envie um JSON no body com Content-Type: application/json</p>
+    <pre>
+curl -X POST http://localhost:5000/api/jogos \
+-H "Content-Type: application/json" \
+-d "{\"nome\": \"Elden Ring\", \"ano_lancamento\": 2022, \"descricao\": \"RPG de mundo aberto desafiador\", \"desenvolvedora\": \"FromSoftware\", \"genero\": \"RPG\", \"preco\": 249.90, \"quantidade\": 7, \"plataformas\": [\"PS5\", \"PC\", \"Xbox Series X\"]}"
+    </pre>
+
+    <p><strong>Inserir usando arquivo JSON (forma recomendada)</strong></p>
+    <p class="note">
+        Em vez de escrever o JSON diretamente no terminal, você pode criar um arquivo <code>.json</code> e enviá-lo.
+    </p>
+
+    <pre>
+# Exemplo de arquivo: novo_jogo.json
+
+{
+  "nome": "Elden Ring",
+  "ano_lancamento": 2022,
+  "descricao": "RPG de mundo aberto desafiador",
+  "desenvolvedora": "FromSoftware",
+  "genero": "RPG",
+  "preco": 249.90,
+  "quantidade": 7,
+  "plataformas": ["PS5", "PC", "Xbox Series X"]
+}
+
+# Envio com curl
+curl -X POST http://localhost:5000/api/jogos \
+-H "Content-Type: application/json" \
+-d @novo_jogo.json
+    </pre>
+
+    <p class="note">
+        O símbolo <code>@</code> indica que o conteúdo será lido de um arquivo local.
+    </p>
+
+    <p class="note">
+        O arquivo deve estar na mesma pasta onde o terminal está sendo executado, ou utilize o caminho completo do arquivo.
+    </p>
+
+    <p><strong>Atualizar jogo (PUT)</strong></p>
+    <p class="note">Envie apenas os campos que deseja alterar. Os demais serão mantidos.</p>
+    <pre>
+curl -X PUT http://localhost:5000/api/jogos/1 \
+-H "Content-Type: application/json" \
+-d "{\"preco\": 199.90, \"quantidade\": 3}"
+    </pre>
+
+    <p><strong>Atualizar usando arquivo JSON</strong></p>
+    <pre>
+# arquivo: update.json
+
+{
+  "preco": 199.90,
+  "quantidade": 3
+}
+
+curl -X PUT http://localhost:5000/api/jogos/1 \
+-H "Content-Type: application/json" \
+-d @update.json
+    </pre>
+
+    <p><strong>Remover jogo (DELETE)</strong></p>
+    <pre>curl -X DELETE http://localhost:5000/api/jogos/1</pre>
+
+    <h2>Respostas de erro</h2>
+    <table>
+        <tr><th>Status</th><th>Situação</th></tr>
+        <tr><td>400</td><td>Campo obrigatório ausente no POST</td></tr>
+        <tr><td>404</td><td>Jogo não encontrado pelo ID informado</td></tr>
+        <tr><td>500</td><td>Erro interno no servidor</td></tr>
+    </table>
+
+    <br>
+    <p class="note">Base URL: <code>http://localhost:5000</code></p>
+
+</body>
+</html>

@@ -53,10 +53,7 @@ projeto/
 │   │
 │   └── static/                     # Arquivos estáticos
 │       ├── css/
-│       │   └── style.css
-│       ├── js/
-│       │   └── script.js
-│       └── images/
+│           └── style.css
 │
 ├── scripts/                        # Scripts auxiliares
 │   └── seed_db.py                  # Popular banco com dados iniciais

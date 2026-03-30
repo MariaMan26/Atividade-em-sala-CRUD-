@@ -125,8 +125,8 @@ Um jogo pode estar disponível em várias plataformas, e uma plataforma pode ter
 ### 1. Clone o repositório
 
 ```cmd
-git clone https://github.com/MariaMan26/Atividade-em-sala-CRUD-.git
-cd Atividade-em-sala-CRUD-
+git clone https://github.com/CaioGomes26/flask-game-inventory-api.git
+cd flask-game-inventory-api
 ```
 
 ### 2. Crie e ative o ambiente virtual

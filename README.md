@@ -2,12 +2,13 @@
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![Flask](https://img.shields.io/badge/Flask-API-black)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-orange)
 ![SQLite](https://img.shields.io/badge/SQLite-Database-lightgrey)
 
 > 📚 **Atividade de sala de aula** — SENAI CTTI
-> Implementação de uma API REST com operações CRUD utilizando Flask e SQLite, seguindo arquitetura modular em camadas.
+> Implementação de uma API REST com operações CRUD utilizando Flask, Flask-SQLAlchemy e SQLite, seguindo arquitetura modular em camadas.
 
-API REST desenvolvida com **Flask** e **SQLite** para gerenciamento de um inventário de jogos, com suporte a múltiplas plataformas por jogo via relacionamento N:N.
+API REST desenvolvida com **Flask** e **SQLAlchemy ORM** para gerenciamento de um inventário de jogos, com suporte a múltiplas plataformas por jogo via relacionamento N:N.
 
 ---
 
@@ -33,12 +34,13 @@ projeto/
 │
 ├── app/                            # Núcleo da aplicação
 │   ├── __init__.py                 # Application Factory (create_app)
+│   ├── extensions.py               # Instância do SQLAlchemy (db)
 │   │
-│   ├── db/                         # Camada de infraestrutura
-│   │   ├── connection.py           # Conexão com SQLite
-│   │   └── init_db.py              # Criação das tabelas
+│   ├── models/                     # Mapeamento ORM das tabelas
+│   │   ├── jogo.py                 # Classe Jogo
+│   │   └── plataforma.py           # Classe Plataforma + tabela associativa
 │   │
-│   ├── repositories/               # Acesso a dados (SQL puro)
+│   ├── repositories/               # Acesso a dados via ORM
 │   │   └── jogo_repository.py
 │   │
 │   ├── services/                   # Regras de negócio
@@ -52,7 +54,7 @@ projeto/
 │   │   └── index.html
 │   │
 │   └── static/                     # Arquivos estáticos
-│       ├── css/
+│       └── css/
 │           └── style.css
 │
 ├── scripts/                        # Scripts auxiliares
@@ -77,9 +79,13 @@ routes/          → recebe a requisição, devolve resposta HTTP
     ↓
 services/        → regras de negócio, validações, tratamento de erros
     ↓
-repositories/    → queries SQL puras, sem lógica de negócio
+repositories/    → acesso a dados via db.session e objetos ORM
     ↓
-db/              → conexão com o banco
+models/          → classes Python que mapeiam as tabelas do banco
+    ↓
+SQLAlchemy       → gerencia conexão, sessão e queries
+    ↓
+SQLite
 ```
 
 ---
@@ -109,6 +115,7 @@ Um jogo pode estar disponível em várias plataformas, e uma plataforma pode ter
 
 - **Python 3.x**
 - **Flask** — framework web para a API
+- **Flask-SQLAlchemy** — ORM para acesso ao banco de dados
 - **SQLite** — banco de dados relacional embutido
 
 ---
@@ -235,7 +242,7 @@ curl http://localhost:5000/api/jogos/1
   "id": 1,
   "nome": "Bloodborne",
   "ano_lancamento": 2015,
-  "descricao": "RPG de ação com ambientação gótica e sombria...",
+  "descricao": "RPG de ação com ambientação gótica e sombria.",
   "desenvolvedora": "FromSoftware",
   "genero": "RPG",
   "preco": 99.9,
@@ -393,6 +400,7 @@ curl http://localhost:5000/api/jogos/5
 - O PUT é não-destrutivo: campos não enviados mantêm seus valores originais
 - Use `@arquivo.json` no curl para evitar problemas com aspas no CMD
 - O `seed_db.py` deve ser rodado com `python -m scripts.seed_db` a partir da raiz do projeto
+- Ao migrar de uma versão anterior, apague o arquivo `instance/inventario_jogos.db` para que o SQLAlchemy recrie o banco com a nova estrutura
 
 ---
 
